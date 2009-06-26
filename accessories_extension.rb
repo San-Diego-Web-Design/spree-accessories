@@ -12,6 +12,11 @@ class AccessoriesExtension < Spree::Extension
     Product.class_eval do
       has_and_belongs_to_many :accessories, :class_name => "Product", :join_table => "accessories" , :association_foreign_key => "accessory_product_id"
     end
+
+    # make the useful fn(s) available in Products
+    ProductsHelper.module_eval do
+      include AccessoriesHelper            # for finding accessories to suggest
+    end
     
     # register Accessories product tab
     Admin::BaseController.class_eval do
