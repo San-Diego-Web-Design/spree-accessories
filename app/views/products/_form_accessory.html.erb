@@ -1,7 +1,7 @@
 <%# this is very close to _cart_form in the core %>
 
-<% if product.variants? %>
 <div id="product-variants">
+<% if product.variants? %>
   <% vars = product.variants 
      # could use orderable? if it wasn't broken
      disabled, available = vars.partition {|v| !v.in_stock && !Spree::Config[:allow_backorders] }
