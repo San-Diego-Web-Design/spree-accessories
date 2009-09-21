@@ -41,7 +41,7 @@ li.accessory label {
         <%= link_to acc.name, acc %>
         <br/>
         <span class="component_price"> 
-          Sale price: <%= product_price(acc, :show_vat_text => false) if acc.master_price %>
+          Sale price: <%= product_price(acc, :show_vat_text => false) if acc.price %>
         </span>
       </div> 
 
