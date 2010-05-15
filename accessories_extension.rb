@@ -20,11 +20,11 @@ class AccessoriesExtension < Spree::Extension
     
     # register Accessories product tab
     Admin::BaseController.class_eval do
-      before_filter :add_accessories_tab
+#      before_filter :add_accessories_tab
       
       private
       def add_accessories_tab
-        @product_admin_tabs << {:name => t('accessories'), :url => "selected_admin_product_accessories_url"}
+#        @product_admin_tabs << {:name => t('accessories'), :url => "selected_admin_product_accessories_url"}
       end
     end
  

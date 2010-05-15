@@ -1,3 +1,12 @@
+<script type="text/javascript">
+var handle_ajax_error = function(XMLHttpRequest, textStatus, errorThrown){
+  jQuery.tree.rollback(last_rollback);
+
+  jQuery("#ajax_error").show().html("<strong>" + server_error + "</strong><br/>" + taxonomy_tree_error);
+};
+
+</script>
+
 <table class="index">
   <thead>
   	<tr>
@@ -10,14 +19,19 @@
       <tr id="<%= dom_id(accessory, :sel)%>">
         <td><%= accessory.name %></td>
   	    <td class="actions">
-          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(accessory, :rem_spinner)}" %>		  
-		      <%= link_to_remote  icon('delete') + ' ' + t('remove'), 
-		                         {:url => remove_admin_product_accessory_url(@product, accessory),
-		                         :loading => "Element.show(#{dom_id(accessory, :rem_spinner)})",
-		                         :update => 'selected-accessories',
-		                         :complete => "$('#{dom_id(accessory, :sel)}').remove(); Element.hide(#{dom_id(accessory, :rem_spinner)});"}, :class => 'iconlink' %>
-                       
-  	    </td>        
+          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(accessory, :rem_spinner)}" %>
+
+<%= link_to_function icon('delete') + ' ' + t('remove'), %Q{$.ajax({
+    type:"POST",
+    url:'#{remove_admin_product_accessory_url(@product, accessory)}',
+    data:({_method: "post", authenticity_token: AUTH_TOKEN}),
+    dataType:'html',
+    beforeSend:function(req) { jQuery(#{dom_id(accessory, :rem_spinner)}).show(); },
+    error:handle_ajax_error,
+    success: function(data, code, req) {jQuery('#sel_#{dom_id(accessory)}').remove(); },
+    complete:function(req, status) { jQuery(#{dom_id(accessory, :rem_spinner)}).hide(); }})},
+    :class => 'iconlink' %>
+  	    </td>
       </tr>
     <% end %>
     <% if accessories.empty? %>

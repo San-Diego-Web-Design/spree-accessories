@@ -4,6 +4,13 @@
     if (row.style.display == '') row.style.display = 'none';
     else row.style.display = '';
   }
+
+var handle_ajax_error = function(XMLHttpRequest, textStatus, errorThrown){
+  jQuery.tree.rollback(last_rollback);
+
+  jQuery("#ajax_error").show().html("<strong>" + server_error + "</strong><br/>" + taxonomy_tree_error);
+};
+
 </script>
 <h4><%= t('available_accessories') %></h4>
 <table class="index">
@@ -18,13 +25,21 @@
       <tr id="<%= dom_id(accessory) %>">
         <td><%= accessory.name %></td>
 		    <td class="actions">
-          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(accessory, :spinner)}" %>		  		
-		      <%= link_to_remote icon('add') + ' ' + t('select'), 
-		                         {:url => select_admin_product_accessory_path(@product, accessory),
-		                         :loading => "Element.show(#{dom_id(accessory, :spinner)})",
-		                         :update => 'selected-accessories',
-		                         :complete => "$('#{dom_id(accessory)}').remove(); Element.hide(#{dom_id(accessory, :spinner)});"}, :class => 'iconlink' %>  
-		    </td>        
+          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(accessory, :spinner)}" %>
+
+<%= link_to_function icon('add') + ' ' + t('select'), %Q{$.ajax({
+    type:"POST",
+    url:'#{select_admin_product_accessory_path(@product, accessory)}',
+    data:({_method: "post", authenticity_token: AUTH_TOKEN}),
+    dataType:'html',
+    beforeSend:function(req) { jQuery(#{dom_id(accessory, :spinner)}).show(); },
+    error:handle_ajax_error,
+    success: function(request) { jQuery('#selected-accessories').html(request); jQuery('##{dom_id(accessory)}').remove();},
+    complete:function(req, status) { jQuery(#{dom_id(accessory, :spinner)}).hide(); }
+    })},
+    :class => 'iconlink' %>
+
+        </td>
       </tr>
     <% end %>
     <% if @available_accessories.empty? %>

@@ -17,7 +17,7 @@
 <% if product.has_stock? || Spree::Config[:allow_backorders] %>
   <label><%= t('quantity') %>:&nbsp;</label>
   <%= text_field_tag (product.variants? ? :quantity : "variants[#{product.variant.id}]"), 
-                 0, :class => "title", :size => 3 %>
+                 0, :class => "title", :size => 2 %>
 <!--
   &nbsp;
   <button type='submit' class='large primary'>
