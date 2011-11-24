@@ -1,13 +1,12 @@
-class Admin::AccessoriesController < Admin::BaseController
-  resource_controller
+class Admin::AccessoriesController < Admin::ResourceController
   before_filter :load_object, :only => [:selected, :available, :remove]
-  
+
   belongs_to :product
 
   def selected
     @accessories = @product.accessories
   end
-  
+
   def available
     if params[:q].blank?
       @available_accessories = []
@@ -21,15 +20,15 @@ class Admin::AccessoriesController < Admin::BaseController
     end
 
   end
- 
-  
+
+
   def remove
     @product.accessories.delete(@accessory)
     @product.save
     @accessories = @product.accessories
     render :layout => false
-  end  
-  
+  end
+
   def select
     @product = Product.find_by_param!(params[:product_id])
     accessory = Product.find_by_permalink(params[:id])
